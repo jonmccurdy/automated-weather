@@ -1,21 +1,37 @@
-name: Weather Logger
+name: Emmitsburg Weather Logger
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # every 30 minutes
-  workflow_dispatch:
+    - cron: "*/30 * * * *"  # runs every 30 minutes
+  workflow_dispatch:         # allows manual run
 
 jobs:
-  run:
+  log_weather:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: r-lib/actions/setup-r@v2
-      - run: Rscript -e 'install.packages(c("httr","jsonlite","readr"))'
-      - run: Rscript get_emmitsburg_temp.R
-      - run: |
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::httr
+            any::jsonlite
+            any::readr
+
+      - name: Run weather script
+        run: Rscript get_emmitsburg_temp.R
+
+      - name: Commit updated CSV
+        run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add data/
-          git commit -m "Auto update: $(date)"
+          git commit -m "Auto update: $(date)" || echo "No changes to commit"
           git push
