@@ -29,11 +29,11 @@ jobs:
         run: Rscript get_emmitsburg_temp.R
 
       - name: Commit updated CSV
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Auto update: $(date)"
-          branch: main
-          commit_user_name: github-actions
-          commit_user_email: github-actions@github.com
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add data/
+          git diff --quiet || git commit -m "Auto update: $(date)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
