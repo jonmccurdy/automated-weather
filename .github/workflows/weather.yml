@@ -32,7 +32,11 @@ jobs:
       - name: Run weather script
         run: Rscript get_emmitsburg_temp.R
 
-      # Step 5: Commit and push CSV changes
+      # Step 5: Debug - list files to make sure CSV was created
+      - name: List files
+        run: ls -R
+
+      # Step 6: Commit and push CSV changes
       - name: Commit updated CSV
         run: |
           git config --global user.name 'github-actions'
