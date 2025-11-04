@@ -9,14 +9,17 @@ jobs:
   log_weather:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Check out repository
       - name: Check out repo
         uses: actions/checkout@v4
 
+      # Step 2: Set up R
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
+      # Step 3: Install required R packages
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -25,15 +28,14 @@ jobs:
             any::jsonlite
             any::readr
 
+      # Step 4: Run the weather script
       - name: Run weather script
         run: Rscript get_emmitsburg_temp.R
 
+      # Step 5: Commit and push CSV changes
       - name: Commit updated CSV
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add data/
           git diff --quiet || git commit -m "Auto update: $(date)"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
