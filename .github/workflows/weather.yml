@@ -33,3 +33,5 @@ jobs:
         with:
           commit_message: "Auto update: $(date)"
           branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
