@@ -29,9 +29,7 @@ jobs:
         run: Rscript get_emmitsburg_temp.R
 
       - name: Commit updated CSV
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git add data/
-          git commit -m "Auto update: $(date)" || echo "No changes to commit"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto update: $(date)"
+          branch: main
